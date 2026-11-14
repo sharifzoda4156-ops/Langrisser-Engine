@@ -7,10 +7,12 @@ China is an advance research source and an additional evaluation environment.
 The long-term goal includes testing upcoming heroes against the owner's Global
 roster before their Global release.
 
-This document specifies planned behavior. The only executable ruleset today
-remains `protocol-fixture-v0`; no regional live/preview runtime support is claimed.
+Regional snapshot building, preview composition, availability/dependency validation
+and fixture match binding are implemented. The only executable combat ruleset
+remains `protocol-fixture-v0`; real Global/China gameplay is not supported yet.
+See [content snapshot tooling](CONTENT_SNAPSHOTS.md) for the executable examples.
 
-## Planned experiment modes
+## Experiment modes
 
 | Mode | Frozen environment | Intended question |
 | --- | --- | --- |
@@ -18,8 +20,9 @@ remains `protocol-fixture-v0`; no regional live/preview runtime support is claim
 | `cn_live` | Selected, documented China patch and content | What works in the supported China environment? |
 | `global_preview` | Global baseline plus explicit China-derived candidate changes | How might these additions change my team and draft? |
 
-These are proposed metadata labels, not current CLI flags or accepted fixture
-scenario keys. Live means a selected snapshot, not automatic remote tracking.
+These labels are accepted by snapshot manifests/builders, not bare scenario keys.
+A scenario may carry an optional validated `content_snapshot`. Live means a
+selected snapshot, not automatic remote tracking. Executable examples are synthetic.
 Use one shared simulator with immutable, versioned regional bundles. Do not fork
 an engine per region or use one mutable global hero table. Semantic differences
 need a tested mechanic revision; an availability difference can reuse mechanics.
@@ -82,7 +85,9 @@ certainty about future human meta or a guaranteed purchase recommendation.
 
 ## Acceptance gates
 
-1. Documentation and regional metadata agree; fixtures remain explicitly synthetic.
-2. Runtime snapshot validation rejects regional leakage and missing dependencies.
-3. Global and China mechanics each pass evidence-backed cases for selected patches.
-4. Paired baseline/preview evaluation is reproducible, labelled and uncertainty-aware.
+1. Implemented: documentation and metadata distinguish synthetic and release data.
+2. Implemented: snapshots reject regional leakage and missing dependencies; fixture
+   matches bind exact content and preserve the snapshot in replay hashes.
+3. Pending: real Global and China mechanics pass evidence-backed cases.
+4. Pending: meaningful baseline/preview strength evaluation with competent learned
+   policies and uncertainty estimates. Smoke games do not establish future meta.

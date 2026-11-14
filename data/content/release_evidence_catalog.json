@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "catalog_id": "tekkaman-release-evidence-v1",
+  "entries": [
+    {
+      "id": "hero.d_boy",
+      "revision": "release-evidence-v1",
+      "kind": "hero",
+      "fidelity": "release_metadata",
+      "mechanics": [
+        "unimplemented.hero.d_boy"
+      ],
+      "dependencies": [],
+      "payload": null,
+      "releases": {
+        "cn": {
+          "since": "2026-03-26",
+          "until": null,
+          "published_on": "2026-03-25",
+          "source": "https://news.zlongame.com/jx/mzgg/20260325/26163.html"
+        },
+        "global": {
+          "since": "2026-08-13",
+          "until": null,
+          "published_on": "2026-08-10",
+          "source": "https://us-news.zlongame.com/jx/mzInfoNewsEn/20260810/9792.html"
+        }
+      }
+    },
+    {
+      "id": "hero.shinya_aiba",
+      "revision": "release-evidence-v1",
+      "kind": "hero",
+      "fidelity": "release_metadata",
+      "mechanics": [
+        "unimplemented.hero.shinya_aiba"
+      ],
+      "dependencies": [],
+      "payload": null,
+      "releases": {
+        "cn": {
+          "since": "2026-03-26",
+          "until": null,
+          "published_on": "2026-03-25",
+          "source": "https://news.zlongame.com/jx/mzgg/20260325/26163.html"
+        },
+        "global": {
+          "since": "2026-08-13",
+          "until": null,
+          "published_on": "2026-08-10",
+          "source": "https://us-news.zlongame.com/jx/mzInfoNewsEn/20260810/9792.html"
+        }
+      }
+    }
+  ]
+}

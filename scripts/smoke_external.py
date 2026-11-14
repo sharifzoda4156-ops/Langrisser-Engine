@@ -10,11 +10,14 @@ from urllib.request import Request, urlopen
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from apex_engine.stand import verify_replay  # noqa: E402
+from apex_engine.content import bind_snapshot  # noqa: E402
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, help="new output directory")
+    parser.add_argument("--scenario", default=str(ROOT / "scenarios" / "protocol_fixture.json"))
+    parser.add_argument("--snapshot", help="optional sealed snapshot to bind before HTTP creation")
     args = parser.parse_args()
     output = Path(args.output).resolve()
     output.mkdir(parents=True, exist_ok=False)
@@ -26,8 +29,10 @@ def main():
         if not select.select([server.stdout], [], [], 10)[0]:
             raise RuntimeError("stand startup timeout")
         base = json.loads(server.stdout.readline())["url"]
-        config = (ROOT / "scenarios" / "protocol_fixture.json").read_bytes()
-        request = Request(base + "/matches", data=config,
+        config = json.loads(Path(args.scenario).read_text())
+        if args.snapshot:
+            config = bind_snapshot(config, json.loads(Path(args.snapshot).read_text()))
+        request = Request(base + "/matches", data=json.dumps(config).encode(),
                           headers={"Content-Type": "application/json"})
         with urlopen(request, timeout=5) as response:
             match_id = json.load(response)["match_id"]

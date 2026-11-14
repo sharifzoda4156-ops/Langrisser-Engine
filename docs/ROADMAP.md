@@ -22,8 +22,10 @@ are handled correctly, restart preserves state and all replays verify.
 
 - [x] Choose Global as the primary region and China as an advance research source.
 - [ ] Freeze the initial Global patch, actual Apex format, one map and fixed loadouts.
-- [ ] Add immutable regional snapshots and content-availability validation;
-  distinguish Global live, China live and explicit Global-preview experiments.
+- [x] Add sealed regional snapshots, availability/dependency validation and explicit
+  Global previews; bind supported snapshots to fixture matches and replay hashes.
+- [ ] Populate verified real-game regional content and implement its mechanics;
+  metadata-only release records do not count as playable heroes.
 - [ ] Collect evidence-backed mechanics cases; mark unknowns explicitly.
 - [ ] Model rounds, activations, skill actions, extra movement and reactivation.
 - [ ] Add actual movement profiles, terrain effects and guard timing.

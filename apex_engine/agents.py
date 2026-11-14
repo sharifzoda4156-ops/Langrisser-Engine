@@ -51,13 +51,14 @@ def run_selfplay(stand, config, episodes, seed, players, output):
     from pathlib import Path
     import time
 
-    from .game import current_player, integer, schedule
+    from .game import current_player, integer, schedule, validate_config
     from .stand import verify_replay
 
     integer(episodes, "episodes", 1, 10000)
     integer(seed, "seed", 0, 2**63 - 1)
     if len(players) != 2 or any(p not in ("random", "heuristic") for p in players):
         raise ValueError("two baseline players required")
+    config = validate_config(config)
     output = Path(output)
     # Never silently overwrite results from an earlier experiment.
     output.mkdir(parents=True, exist_ok=False)
@@ -101,5 +102,8 @@ def run_selfplay(stand, config, episodes, seed, players, output):
               "config_hash": digest(config), "outcomes": outcomes,
               "decisions": total_decisions, "elapsed_seconds": time.monotonic() - started,
               "output": str(output)}
+    if "content_snapshot" in config:
+        from .content import experiment_metadata
+        report["experiment"] = experiment_metadata(config["content_snapshot"])
     (output / "summary.json").write_text(json.dumps(report, indent=2) + "\n")
     return report

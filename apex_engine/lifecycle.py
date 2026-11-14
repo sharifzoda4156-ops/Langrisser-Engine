@@ -10,6 +10,7 @@ from .errors import EngineError
 from .schema import digest, integer, keys
 
 RULESET = "action-lifecycle-lab-v1"
+TERRAIN_RULESET = "terrain-lab-v1"
 CLOCKS = ("owner_action_end", "round_end")
 SKILL_KINDS = ("self_refresh", "ally_refresh", "timed_effect")
 
@@ -30,16 +31,30 @@ def effect_definition(effect):
 
 def validate_config(config):
     keys(config, ["ruleset", "map", "round_limit", "first_player", "units"], "lifecycle scenario")
-    if config["ruleset"] != RULESET:
+    if config["ruleset"] not in (RULESET, TERRAIN_RULESET):
         raise EngineError("unsupported lifecycle ruleset")
     board = config["map"]
-    keys(board, ["width", "height", "costs"], "map")
+    keys(board, ["width", "height", "costs"] + (["terrain", "profiles"] if config["ruleset"] == TERRAIN_RULESET else []), "map")
     width = integer(board["width"], "width", 2, 32)
     height = integer(board["height"], "height", 2, 32)
     if not isinstance(board["costs"], list) or len(board["costs"]) != width * height:
         raise EngineError("invalid laboratory map costs")
     for cost in board["costs"]:
         integer(cost, "terrain cost", 0, 9)
+    if config["ruleset"] == TERRAIN_RULESET:
+        if any(cost not in (0, 1) for cost in board["costs"]):
+            raise EngineError("terrain lab base costs must be 0 or 1 (blocked/passable)")
+        terrain, profiles = board["terrain"], board["profiles"]
+        if not isinstance(terrain, list) or len(terrain) != width * height or not isinstance(profiles, dict) or not profiles or len(profiles) > 10:
+            raise EngineError("invalid terrain profiles")
+        if any(not isinstance(t, str) or not re.fullmatch(r"fixture_[a-z0-9_]{1,70}", t) for t in terrain):
+            raise EngineError("terrain must use fixture_ identifiers")
+        for name, costs in profiles.items():
+            fixture_id(name)
+            if not isinstance(costs, dict) or set(costs) != set(terrain):
+                raise EngineError("profile must specify every terrain")
+            for cost in costs.values():
+                integer(cost, "profile movement cost", 1, 9)
     integer(config["round_limit"], "round_limit", 1, 100)
     integer(config["first_player"], "first_player", 0, 1)
     units = config["units"]
@@ -49,7 +64,9 @@ def validate_config(config):
     for unit in units:
         keys(unit, ["id", "name", "owner", "x", "y", "hp", "attack", "defense",
                     "hero_movement", "soldier_movement", "range", "post_attack_move",
-                    "skills", "effects"], "lab unit")
+                    "skills", "effects"] + (["movement_profile"] if config["ruleset"] == TERRAIN_RULESET else []), "lab unit")
+        if config["ruleset"] == TERRAIN_RULESET and (not isinstance(unit["movement_profile"], str) or unit["movement_profile"] not in board["profiles"]):
+            raise EngineError("unknown movement profile")
         fixture_id(unit["name"])
         for field, low, high in [("id", 0, 99), ("owner", 0, 1), ("x", 0, width - 1),
                                  ("y", 0, height - 1), ("hp", 1, 10000), ("attack", 1, 10000),
@@ -138,13 +155,30 @@ def native_view(state):
     return result
 
 
+def terrain_config(config, unit):
+    """Build the native cost grid for one acting unit; zero remains impassable."""
+    result = copy.deepcopy(config)
+    board = result["map"]
+    profile = board["profiles"][unit["movement_profile"]]
+    board["costs"] = [profile[t] if cost else 0 for t, cost in zip(board["terrain"], board["costs"])]
+    return result
+
+
 def legal_actions(config, state):
     from .game import native
     if state["phase"] == "finished":
         return []
     pending = state["lifecycle"]["pending"]
     units = {u["id"]: u for u in state["battle"]["units"]}
-    raw = native(config, native_view(state), "legal")
+    if config["ruleset"] == TERRAIN_RULESET:
+        raw = []
+        for unit in state["battle"]["units"]:
+            if unit["hp"] <= 0 or unit["acted"] or unit["owner"] != state["battle"]["active_player"]:
+                continue
+            profile_config = terrain_config(config, unit)
+            raw.extend(a for a in native(profile_config, native_view(state), "legal") if a["unit"] == unit["id"])
+    else:
+        raw = native(config, native_view(state), "legal")
     result = []
     for action in raw:
         if pending and action["unit"] != pending["unit"]:
@@ -251,7 +285,8 @@ def apply_action(config, state, action_id):
         lifecycle["action_serial"] += 1
         events.append({"type": "action_start", "unit": actor["id"], "action": lifecycle["action_serial"]})
     movement = {**action, "target": action["target"] if action["kind"] == "attack" else -1}
-    resolved = native(config, native_view(state), "resolve", movement)
+    effective_config = terrain_config(config, actor) if config["ruleset"] == TERRAIN_RULESET else config
+    resolved = native(effective_config, native_view(state), "resolve", movement)
     for native_unit in resolved["state"]["units"]:
         unit = next(u for u in battle["units"] if u["id"] == native_unit["id"])
         for key in ("x", "y", "hp"):

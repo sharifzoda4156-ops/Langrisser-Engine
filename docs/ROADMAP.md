@@ -31,7 +31,8 @@ are handled correctly, restart preserves state and all replays verify.
   reactivation, post-move and explicit effect clocks in action-lifecycle-lab-v1.
 - [ ] Confirm the laboratory policies in current Global Battle Test and map actual
   hero/skill handlers; do not treat documented contracts as gameplay verification.
-- [ ] Add actual movement profiles, terrain effects and guard timing.
+- [x] Add a versioned synthetic terrain-profile laboratory with per-unit costs.
+- [ ] Validate actual movement profiles, terrain effects and guard timing in Global.
 - [ ] Separate hero/soldier HP, hit timing, crits, stat conversions and rounding.
 - [ ] Explicit chance/observation interfaces; no RNG or privileged-state leakage.
 - [ ] Add a small validated roster covering the required interactions.

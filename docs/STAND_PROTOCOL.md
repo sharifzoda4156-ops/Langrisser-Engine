@@ -2,7 +2,8 @@
 
 ## Scope
 
-Current fidelity: `synthetic_fixture`. There is no hidden information or chance.
+Supported fidelities: `synthetic_fixture` and `mechanics_lab`, selected by ruleset.
+Neither includes hidden information or chance, real Apex damage or trained AI.
 HTTP is a loopback development interface with no authentication, not a public API.
 CLI and HTTP call the same Stand implementation and the same SQLite database.
 
@@ -13,6 +14,18 @@ compact `experiment` label is returned at creation and in player observations;
 the full snapshot stays in the replay's config and participates in state hashes.
 Only synthetic snapshots can execute today. Real release metadata cannot run as
 fixture combat. See [content snapshots](CONTENT_SNAPSHOTS.md).
+
+`action-lifecycle-lab-v1` has a separate strict scenario and reports `mechanics_lab`
+in creation responses, observations, replays and collection summaries. Snapshot
+binding is unsupported there and rejected. While `act_again` or `post_move` is
+pending, the same side retains the request and only that unit may act. A post-move
+request exposes only `finish_move`, including a zero-distance finish. It consumes
+the same request/version protocol and survives restart. See
+[the lifecycle contract](ACTION_LIFECYCLE.md).
+
+Health/startup metadata retains `fidelity` for the default fixture and additionally
+lists `default_ruleset` and `supported_rulesets`. Match fidelity comes from the
+selected ruleset, not the server's default.
 
 ## Routes
 

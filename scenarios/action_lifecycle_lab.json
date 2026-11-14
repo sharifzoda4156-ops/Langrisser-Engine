@@ -1,0 +1,152 @@
+{
+  "ruleset": "action-lifecycle-lab-v1",
+  "map": {
+    "width": 5,
+    "height": 5,
+    "costs": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "round_limit": 3,
+  "first_player": 0,
+  "units": [
+    {
+      "id": 0,
+      "name": "fixture_runner",
+      "owner": 0,
+      "x": 0,
+      "y": 1,
+      "hp": 40,
+      "attack": 8,
+      "defense": 2,
+      "hero_movement": 5,
+      "soldier_movement": 3,
+      "range": 1,
+      "post_attack_move": 3,
+      "skills": [
+        {
+          "id": "fixture_self_refresh",
+          "kind": "self_refresh",
+          "cooldown": 2,
+          "range": 0,
+          "move_allowance": 3,
+          "preserve_effects": true,
+          "uses_per_round": 1,
+          "effect": null
+        }
+      ],
+      "effects": [
+        {
+          "id": "fixture_owner_timer",
+          "clock": "owner_action_end",
+          "remaining": 2,
+          "first_tick": "current_boundary"
+        },
+        {
+          "id": "fixture_round_timer",
+          "clock": "round_end",
+          "remaining": 2,
+          "first_tick": "current_boundary"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "name": "fixture_support",
+      "owner": 0,
+      "x": 0,
+      "y": 3,
+      "hp": 40,
+      "attack": 8,
+      "defense": 2,
+      "hero_movement": 5,
+      "soldier_movement": 3,
+      "range": 1,
+      "post_attack_move": 0,
+      "skills": [
+        {
+          "id": "fixture_ally_refresh",
+          "kind": "ally_refresh",
+          "cooldown": 2,
+          "range": 3,
+          "move_allowance": 0,
+          "preserve_effects": false,
+          "uses_per_round": 1,
+          "effect": null
+        },
+        {
+          "id": "fixture_timer_cast",
+          "kind": "timed_effect",
+          "cooldown": 2,
+          "range": 0,
+          "move_allowance": 0,
+          "preserve_effects": false,
+          "uses_per_round": 1,
+          "effect": {
+            "id": "fixture_cast_timer",
+            "clock": "owner_action_end",
+            "remaining": 2,
+            "first_tick": "following_boundary"
+          }
+        }
+      ],
+      "effects": []
+    },
+    {
+      "id": 2,
+      "name": "fixture_defender",
+      "owner": 1,
+      "x": 4,
+      "y": 1,
+      "hp": 40,
+      "attack": 8,
+      "defense": 2,
+      "hero_movement": 5,
+      "soldier_movement": 3,
+      "range": 1,
+      "post_attack_move": 0,
+      "skills": [],
+      "effects": []
+    },
+    {
+      "id": 3,
+      "name": "fixture_observer",
+      "owner": 1,
+      "x": 4,
+      "y": 3,
+      "hp": 40,
+      "attack": 8,
+      "defense": 2,
+      "hero_movement": 5,
+      "soldier_movement": 3,
+      "range": 1,
+      "post_attack_move": 0,
+      "skills": [],
+      "effects": []
+    }
+  ]
+}

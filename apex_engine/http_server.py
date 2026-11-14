@@ -6,6 +6,7 @@ from urllib.parse import parse_qs, urlsplit
 
 from .errors import Conflict, EngineError, NotFound
 from .stand import Stand
+from .game import RULESET, supported_rulesets
 
 MAX_BODY = 1024 * 1024
 
@@ -37,7 +38,8 @@ def make_server(database, port=8765):
                 parts = urlsplit(self.path)
                 if method == "GET" and parts.path == "/health":
                     self.send_json(200, {"status": "ok", "protocol_version": 1,
-                                         "fidelity": "synthetic_fixture"})
+                                         "fidelity": "synthetic_fixture", "default_ruleset": RULESET,
+                                         "supported_rulesets": supported_rulesets()})
                     return
                 payload = None
                 if method == "POST":

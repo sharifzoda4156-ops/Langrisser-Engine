@@ -26,8 +26,11 @@ are handled correctly, restart preserves state and all replays verify.
   Global previews; bind supported snapshots to fixture matches and replay hashes.
 - [ ] Populate verified real-game regional content and implement its mechanics;
   metadata-only release records do not count as playable heroes.
-- [ ] Collect evidence-backed mechanics cases; mark unknowns explicitly.
-- [ ] Model rounds, activations, skill actions, extra movement and reactivation.
+- [x] Start a primary-source mechanics inventory with explicit unknowns and lab probes.
+- [x] Model separate rounds, activations, actions, immediate continuations, ally
+  reactivation, post-move and explicit effect clocks in action-lifecycle-lab-v1.
+- [ ] Confirm the laboratory policies in current Global Battle Test and map actual
+  hero/skill handlers; do not treat documented contracts as gameplay verification.
 - [ ] Add actual movement profiles, terrain effects and guard timing.
 - [ ] Separate hero/soldier HP, hit timing, crits, stat conversions and rounding.
 - [ ] Explicit chance/observation interfaces; no RNG or privileged-state leakage.

@@ -1,7 +1,7 @@
 """Baseline players for exercising the stand; neither is a learned policy."""
 import random
 
-from .game import RULESET, digest
+from .game import digest
 from . import __version__
 
 
@@ -37,6 +37,12 @@ def choose_action(request, kind, rng):
         distance = min(abs(x - e["x"]) + abs(y - e["y"]) for e in enemies)
         damage, kill = 0, 0
         if action["target"] >= 0:
+            if action["kind"] == "skill":
+                # Laboratory baseline only: exercise immediate continuation and
+                # ally refresh instead of interpreting an ally target as damage.
+                skill = next(s for s in unit["skills"] if s["id"] == action["skill"])
+                priority = {"self_refresh": 30, "ally_refresh": 20, "timed_effect": 1}[skill["kind"]]
+                return (0, priority, -distance, action["action_id"])
             target = units[action["target"]]
             damage = min(target["hp"], max(1, unit["attack"] - target["defense"]))
             kill = int(damage == target["hp"])
@@ -51,7 +57,7 @@ def run_selfplay(stand, config, episodes, seed, players, output):
     from pathlib import Path
     import time
 
-    from .game import current_player, integer, schedule, validate_config
+    from .game import current_player, integer, decision_bound, validate_config, fidelity
     from .stand import verify_replay
 
     integer(episodes, "episodes", 1, 10000)
@@ -70,8 +76,7 @@ def run_selfplay(stand, config, episodes, seed, players, output):
         for episode in range(episodes):
             match_id = stand.create_match(config)["match_id"]
             trajectory = []
-            bound = config["round_limit"] * config["draft"]["team_size"] * 2
-            bound += len(schedule(config))
+            bound = decision_bound(config)
             for _ in range(bound + 1):
                 replay = stand.get_replay(match_id)
                 player = current_player(config, replay["final_state"])
@@ -96,8 +101,8 @@ def run_selfplay(stand, config, episodes, seed, players, output):
             total_decisions += len(trajectory)
             (output / f"episode-{episode:05d}.json").write_text(
                 json.dumps(replay, indent=2) + "\n")
-    report = {"ruleset": RULESET, "engine_version": __version__,
-              "fidelity": "synthetic_fixture", "training": False,
+    report = {"ruleset": config["ruleset"], "engine_version": __version__,
+              "fidelity": fidelity(config), "training": False,
               "players": players, "episodes": episodes, "seed": seed,
               "config_hash": digest(config), "outcomes": outcomes,
               "decisions": total_decisions, "elapsed_seconds": time.monotonic() - started,

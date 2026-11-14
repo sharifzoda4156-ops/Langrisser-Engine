@@ -27,6 +27,12 @@ The current stack is a vertical protocol fixture:
 This establishes a usable external-agent interface before actual game mechanics
 land. It makes no claim of Langrisser fidelity, agent strength or training speed.
 
+The separate [action lifecycle lab](ACTION_LIFECYCLE.md) now exercises activation,
+action, immediate continuation, ally reactivation, post-move and explicit timer
+boundaries. Source-backed concepts and unverified lab policies are recorded
+separately. Its native `resolve` operation leaves scheduling to Python; legacy
+`apply` keeps the original fixture semantics. Neither ruleset is a full Apex game.
+
 ## Fixture semantics (not Apex rules)
 
 - Two sides; 1–5 synthetic units per side; map dimensions 2–32 per axis.

@@ -7,10 +7,13 @@ learned battle/draft policies, search, self-play and a league of opponents.
 Human-level or superhuman strength must be established by independent evaluation.
 Read README.md, docs/ARCHITECTURE.md and docs/ROADMAP.md before substantial work.
 
-Current executable ruleset: **protocol-fixture-v0**, a deliberately synthetic
-protocol fixture. There are NO implemented real heroes, soldiers, Guard, Apex
-combat formulas, neural training or search. Do not describe the fixture as Apex
-fidelity or baseline trajectory collection as learning.
+Executable rulesets: **protocol-fixture-v0** (synthetic_fixture) and
+**action-lifecycle-lab-v1** (mechanics_lab). The latter separates actions,
+continuations and duration clocks; its scheduling/cooldown details are declared
+lab policies, not current-Global certification. Read docs/ACTION_LIFECYCLE.md and
+data/mechanics/action_lifecycle_evidence.json. Real heroes, soldiers' combat,
+Guard, Apex damage, neural training and search are NOT implemented. Do not call
+baseline trajectory collection learning or label lab policies game-verified.
 
 ## Public and local instructions
 
@@ -73,6 +76,13 @@ normal builds. Generated binaries, databases, model weights and runs stay out of
   a made-up rules implementation. Freeze fixture semantics or bump its ruleset id.
 - Distinguish round, player decision, unit action, extra movement, reactivation,
   combat and map effects. Do not implement one universal end-turn handler.
+- Preserve pending lifecycle decisions through restart. Post-move confirmation
+  must not create an additional full action, allow attacks, tick clocks twice
+  or hand control to another unit early. Keep extra-action search values tied
+  to the actual next actor, not an automatic sign/side flip.
+- Do not generalize the lab's cooldown/first-tick/reapplication policies to real
+  abilities without Global observations. Source descriptions document contracts,
+  not this project's independent gameplay verification. Keep those statuses apart.
 - Model hero/soldier state and damage timing separately when actual combat lands.
 - Preserve route information. Endpoint-only deduplication is unsafe once route
   effects exist. Current fixture uses one canonical route and has no such effects.

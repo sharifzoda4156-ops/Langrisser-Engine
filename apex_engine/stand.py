@@ -8,7 +8,7 @@ import uuid
 from .errors import Conflict, EngineError, NotFound
 from . import __version__
 from .game import (apply_action, canonical, current_player, digest, initial_state,
-                   integer, keys, legal_actions, observation, state_hash, validate_config)
+                   integer, keys, legal_actions, observation, state_hash, validate_config, fidelity)
 
 
 class Stand:
@@ -60,7 +60,7 @@ class Stand:
             db.execute("INSERT INTO matches VALUES (?, ?, ?, 0)",
                        (match_id, canonical(config), canonical(state)))
         result = {"match_id": match_id, "version": 0, "ruleset": config["ruleset"],
-                  "fidelity": "synthetic_fixture"}
+                  "fidelity": fidelity(config)}
         if "content_snapshot" in config:
             from .content import experiment_metadata
             result["experiment"] = experiment_metadata(config["content_snapshot"])
@@ -132,7 +132,7 @@ class Stand:
             rows = db.execute("SELECT payload, record FROM decisions WHERE match_id=? ORDER BY version",
                               (match_id,)).fetchall()
         return {"protocol_version": 1, "engine_version": __version__,
-                "fidelity": "synthetic_fixture", "match_id": match_id,
+                "fidelity": fidelity(config), "match_id": match_id,
                 "config": config, "version": version, "final_state": state,
                 "final_hash": state_hash(config, state),
                 "decisions": [{"submission": json.loads(row["payload"]),
@@ -150,13 +150,14 @@ def _verify_replay(replay):
     keys(replay, ["protocol_version", "engine_version", "fidelity", "match_id", "config",
                   "version", "final_state", "final_hash", "decisions"], "replay")
     if (type(replay["protocol_version"]) is not int or replay["protocol_version"] != 1
-            or replay["engine_version"] != __version__
-            or replay["fidelity"] != "synthetic_fixture"):
+            or replay["engine_version"] != __version__):
         raise EngineError("unsupported replay format")
     integer(replay["version"], "replay version", 0, 1000000)
     if not isinstance(replay["decisions"], list):
         raise EngineError("replay decisions must be a list")
     config = validate_config(replay["config"])
+    if replay["fidelity"] != fidelity(config):
+        raise EngineError("replay fidelity does not match its ruleset")
     state = initial_state(config)
     for version, decision in enumerate(replay["decisions"]):
         player = current_player(config, state)

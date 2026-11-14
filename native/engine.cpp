@@ -152,7 +152,7 @@ void write_action(const Action& a, int width) {
     std::cout << "]}";
 }
 
-void apply(State& s, const Action& a) {
+void apply(State& s, const Action& a, bool advance = true) {
     auto actor = std::find_if(s.units.begin(), s.units.end(),
                             [&](const Unit& u) { return u.id == a.unit; });
     actor->x = a.x;
@@ -166,6 +166,14 @@ void apply(State& s, const Action& a) {
         target->hp -= damage;
         std::cout << ",{\"type\":\"fixture_damage\",\"source\":" << a.unit
                   << ",\"target\":" << a.target << ",\"amount\":" << damage << '}';
+    }
+    if (!advance) {
+        // The lifecycle laboratory owns activation/round completion. Legacy
+        // apply retains its exact output and rules for existing fixture replays.
+        std::cout << "],\"state\":";
+        write_state(s);
+        std::cout << "}\n";
+        return;
     }
     actor->acted = 1;
     std::array<bool, 2> alive{}, ready{};
@@ -198,9 +206,9 @@ void apply(State& s, const Action& a) {
 
 int main(int argc, char** argv) {
     try {
-        require(argc == 2, "expected legal or apply command");
+        require(argc == 2, "expected legal, apply or resolve command");
         const std::string command = argv[1];
-        require(command == "legal" || command == "apply", "unknown command");
+        require(command == "legal" || command == "apply" || command == "resolve", "unknown command");
         State s = read_state();
         const auto legal = legal_actions(s);
         if (command == "legal") {
@@ -219,7 +227,7 @@ int main(int argc, char** argv) {
                     && a.y == requested.y && a.target == requested.target;
             });
             require(found != legal.end(), "illegal action");
-            apply(s, *found);
+            apply(s, *found, command != "resolve");
         }
         return 0;
     } catch (const std::exception& error) {

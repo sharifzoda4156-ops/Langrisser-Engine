@@ -1,6 +1,7 @@
 # Mechanic case: <name>
 
-- Status: hypothesis / observed / reproduced / verified / contradicted
+- Status: hypothesis / documented / observed / reproduced / verified / contradicted
+- A documented source is not an independently observed/reproduced game result.
 - Region and patch/date:
 - Target region/patch (if different); evidence or assumptions for transfer:
 - Experiment mode and baseline/candidate content revisions (for previews):

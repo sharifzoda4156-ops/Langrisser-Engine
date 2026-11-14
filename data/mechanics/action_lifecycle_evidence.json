@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "ruleset": "action-lifecycle-lab-v1",
+  "fidelity": "mechanics_lab",
+  "independent_game_observations": [],
+  "entries": [
+    {
+      "id": "mobility-minimum",
+      "status": "documented",
+      "region": "global",
+      "source": "https://us-news.zlongame.com/mzgl/994.jhtml",
+      "source_date": "2019-02-24",
+      "statement": "Base unit mobility is bounded by the slower hero/soldier component; the guide gives the 5/3 example.",
+      "regression": "LifecycleTests.test_documented_mobility_example",
+      "scope": "Base mobility only; current Global modifiers and movement profiles are not certified.",
+      "reviewed_on": "2026-11-14",
+      "current_global_gameplay_verified": false
+    },
+    {
+      "id": "separate-extra-movement",
+      "status": "documented",
+      "region": "cn",
+      "source": "https://news.zlongame.com/jx/heroSSR/20180619/5173.html",
+      "source_date": null,
+      "statement": "The card distinguishes movement after attacking from an ability allowing movement and another attack.",
+      "regression": "LifecycleTests.test_post_attack_move_is_a_separate_restricted_decision",
+      "scope": "Distinct primitives only; exact duration ordering and complete hero behavior remain unverified.",
+      "reviewed_on": "2026-11-14",
+      "current_global_gameplay_verified": false
+    },
+    {
+      "id": "skill-specific-duration-preservation",
+      "status": "documented",
+      "region": "global",
+      "source": "https://us-news.zlongame.com/jx/mzInfoNewsEn/20211115/7905.html",
+      "source_date": "2021-11-15",
+      "statement": "One self-reactivating ability explicitly preserves existing buff turn counts.",
+      "regression": "LifecycleTests.test_effect_preservation_is_explicit_per_skill",
+      "scope": "Preservation option only; no implementation of the named real hero or its other effects.",
+      "reviewed_on": "2026-11-14",
+      "current_global_gameplay_verified": false
+    },
+    {
+      "id": "multiple-actions-per-round",
+      "status": "documented",
+      "region": "global",
+      "source": "https://us-news.zlongame.com/mzgl/1701.jhtml",
+      "source_date": "2019-05-07",
+      "statement": "The guide describes a hero performing multiple attacks within one round.",
+      "regression": "LifecycleTests.test_self_refresh_attack_and_post_move_share_one_activation",
+      "scope": "Clock distinction only; the real kill-triggered talent is not implemented.",
+      "reviewed_on": "2026-11-14",
+      "current_global_gameplay_verified": false
+    },
+    {
+      "id": "battle-test-observation-protocol",
+      "status": "documented",
+      "region": "global",
+      "source": "https://us-news.zlongame.com/jx/mzInfoNewsEn/20250810/9690.html",
+      "source_date": "2025-08-10",
+      "statement": "Battle Test permits preparing and controlling both teams using the account-owned selection.",
+      "regression": null,
+      "scope": "Collection procedure documented; no game-client test has been run by this project.",
+      "reviewed_on": "2026-11-14",
+      "current_global_gameplay_verified": false
+    }
+  ],
+  "laboratory_policies": [
+    "alternating-ready-unit handoff",
+    "configured first player each round",
+    "post-move completion precedes action-end timer processing",
+    "explicit first-tick choices",
+    "new cooldown skips cast boundary",
+    "same-id effect replaces timer",
+    "finite per-skill uses per round",
+    "round-limit draw",
+    "synthetic damage without soldiers/counterattacks"
+  ]
+}

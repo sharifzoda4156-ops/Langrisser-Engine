@@ -6,7 +6,7 @@ import sys
 
 from .agents import run_selfplay
 from .errors import EngineError
-from .game import ROOT, integer
+from .game import ROOT, integer, RULESET, supported_rulesets
 from .stand import Stand, verify_replay
 
 
@@ -18,7 +18,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--db", default="runs/stand.sqlite3")
     commands = parser.add_subparsers(dest="command", required=True)
-    create = commands.add_parser("create", help="create a synthetic fixture match")
+    create = commands.add_parser("create", help="create a fixture or mechanics-lab match")
     create.add_argument("--scenario", default=str(ROOT / "scenarios" / "protocol_fixture.json"))
     create.add_argument("--snapshot", help="sealed content snapshot; exact scenario binding is checked")
     request = commands.add_parser("request", help="fetch a player's pending decision")
@@ -82,7 +82,8 @@ def main():
             integer(args.port, "port", 0, 65535)
             server = make_server(args.db, args.port)
             print(json.dumps({"url": f"http://127.0.0.1:{server.server_port}",
-                              "fidelity": "synthetic_fixture"}), flush=True)
+                              "fidelity": "synthetic_fixture", "default_ruleset": RULESET,
+                              "supported_rulesets": supported_rulesets()}), flush=True)
             try:
                 server.serve_forever()
             except KeyboardInterrupt:

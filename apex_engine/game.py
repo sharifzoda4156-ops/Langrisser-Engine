@@ -16,12 +16,15 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def validate_config(config):
+    if isinstance(config, dict) and config.get("ruleset") == "action-lifecycle-lab-v1":
+        from .lifecycle import validate_config as validate_lifecycle
+        return validate_lifecycle(config)
     fields = ["ruleset", "map", "round_limit", "draft", "boxes"]
     if isinstance(config, dict) and "content_snapshot" in config:
         fields.append("content_snapshot")
     keys(config, fields, "scenario")
     if config["ruleset"] != RULESET:
-        raise EngineError("unsupported ruleset: only protocol-fixture-v0 is implemented")
+        raise EngineError("unsupported ruleset: expected protocol-fixture-v0 or action-lifecycle-lab-v1")
     board = config["map"]
     keys(board, ["width", "height", "costs"], "map")
     width = integer(board["width"], "width", 2, 32)
@@ -81,6 +84,9 @@ def schedule(config):
 
 def initial_state(config):
     config = validate_config(config)
+    if config["ruleset"] == "action-lifecycle-lab-v1":
+        from .lifecycle import initial_state as initial_lifecycle
+        return initial_lifecycle(config)
     state = {"phase": "draft", "draft_index": 0, "picked": [[], []],
              "banned": [[], []], "battle": None}
     if not config["draft"]["enabled"]:
@@ -143,6 +149,9 @@ def native(config, state, command, action=None):
 
 
 def legal_actions(config, state):
+    if config["ruleset"] == "action-lifecycle-lab-v1":
+        from .lifecycle import legal_actions as lifecycle_actions
+        return lifecycle_actions(config, state)
     if state["phase"] == "finished":
         return []
     if state["phase"] == "draft":
@@ -157,6 +166,9 @@ def legal_actions(config, state):
 
 
 def apply_action(config, state, action_id):
+    if config["ruleset"] == "action-lifecycle-lab-v1":
+        from .lifecycle import apply_action as lifecycle_apply
+        return lifecycle_apply(config, state, action_id)
     action = next((a for a in legal_actions(config, state) if a["action_id"] == action_id), None)
     if action is None:
         raise EngineError("action_id is not legal in this state")
@@ -183,6 +195,10 @@ def apply_action(config, state, action_id):
 def observation(config, state, player):
     """Fixture is perfect-information. Do not reuse this for hidden-info rulesets."""
     integer(player, "player", 0, 1)
+    if config["ruleset"] == "action-lifecycle-lab-v1":
+        return {"ruleset": config["ruleset"], "fidelity": fidelity(config), "player": player,
+                "map": copy.deepcopy(config["map"]), "round_limit": config["round_limit"],
+                "state": copy.deepcopy(state)}
     result = {"ruleset": RULESET, "fidelity": "synthetic_fixture", "player": player,
             "map": copy.deepcopy(config["map"]), "round_limit": config["round_limit"],
             "boxes": copy.deepcopy(config["boxes"]), "state": copy.deepcopy(state)}
@@ -190,3 +206,18 @@ def observation(config, state, player):
         from .content import experiment_metadata
         result["experiment"] = experiment_metadata(config["content_snapshot"])
     return result
+
+
+def fidelity(config):
+    return "mechanics_lab" if config["ruleset"] == "action-lifecycle-lab-v1" else "synthetic_fixture"
+
+
+def supported_rulesets():
+    return {RULESET: "synthetic_fixture", "action-lifecycle-lab-v1": "mechanics_lab"}
+
+
+def decision_bound(config):
+    if config["ruleset"] == "action-lifecycle-lab-v1":
+        from .lifecycle import decision_bound as lifecycle_bound
+        return lifecycle_bound(config)
+    return config["round_limit"] * config["draft"]["team_size"] * 2 + len(schedule(config))

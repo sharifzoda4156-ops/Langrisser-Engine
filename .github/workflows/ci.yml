@@ -29,3 +29,8 @@ jobs:
         run: python scripts/smoke_external.py --output runs/ci-external
       - name: Exercise regional snapshots and explicit preview end to end
         run: python scripts/smoke_regional.py --output runs/ci-regional
+      - name: Exercise lifecycle lab with external players and collection
+        run: |
+          python -m apex_engine selfplay --scenario scenarios/action_lifecycle_lab.json --episodes 2 --seed 1 --output runs/ci-lifecycle
+          python -m apex_engine verify runs/ci-lifecycle/episode-00000.json
+          python scripts/smoke_external.py --scenario scenarios/action_lifecycle_lab.json --output runs/ci-lifecycle-external

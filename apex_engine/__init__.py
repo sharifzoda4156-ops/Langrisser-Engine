@@ -1,3 +1,3 @@
-"""Langrisser Engine foundation. Only synthetic protocol fixtures are implemented."""
+"""Langrisser Engine foundation: synthetic fixtures and an action lifecycle lab."""
 
 __version__ = "0.1.0"

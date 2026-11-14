@@ -1,0 +1,24 @@
+{
+  "ruleset": "protocol-fixture-v0",
+  "map": {
+    "width": 5,
+    "height": 3,
+    "costs": [1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1]
+  },
+  "round_limit": 6,
+  "draft": {"enabled": true, "team_size": 2, "bans_per_side": 1},
+  "boxes": [
+    [
+      {"id": "fixture_striker", "hp": 14, "attack": 8, "defense": 2, "movement": 2, "range": 1},
+      {"id": "fixture_sentinel", "hp": 20, "attack": 6, "defense": 4, "movement": 1, "range": 1},
+      {"id": "fixture_archer", "hp": 10, "attack": 7, "defense": 1, "movement": 2, "range": 2},
+      {"id": "fixture_scout", "hp": 12, "attack": 6, "defense": 1, "movement": 3, "range": 1}
+    ],
+    [
+      {"id": "fixture_striker", "hp": 14, "attack": 8, "defense": 2, "movement": 2, "range": 1},
+      {"id": "fixture_sentinel", "hp": 20, "attack": 6, "defense": 4, "movement": 1, "range": 1},
+      {"id": "fixture_archer", "hp": 10, "attack": 7, "defense": 1, "movement": 2, "range": 2},
+      {"id": "fixture_scout", "hp": 12, "attack": 6, "defense": 1, "movement": 3, "range": 1}
+    ]
+  ]
+}

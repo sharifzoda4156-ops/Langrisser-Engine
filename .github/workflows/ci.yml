@@ -1,0 +1,29 @@
+name: checks
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  fixture:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Build native fixture with undefined-behavior sanitizer
+        run: python scripts/build_native.py --sanitize
+      - name: Test native rules, stand, HTTP, replay and baseline collection
+        run: python -m unittest discover -s tests -v
+      - name: Exercise documented CLI
+        run: |
+          python -m apex_engine selfplay --episodes 2 --seed 1 --output runs/ci-smoke
+          python -m apex_engine verify runs/ci-smoke/episode-00000.json
+      - name: Exercise server and external players in separate processes
+        run: python scripts/smoke_external.py --output runs/ci-external

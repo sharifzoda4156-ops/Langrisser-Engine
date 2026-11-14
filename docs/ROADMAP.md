@@ -3,6 +3,10 @@
 Goal: a self-improving Apex draft/battle agent with verifiable mechanics and fair
 evaluation against strong people. No fixed date, throughput or strength promise.
 
+Primary target: **Global**. China supplies advance research and explicit Global
+preview experiments. See [regional rulesets and forecasting](REGIONAL_RULESETS.md).
+Release delays are evidence per content item, not a fixed six-month rule.
+
 ## M0 — Executable foundation (this version)
 
 - [x] Synthetic draft/battle fixture in a native C++ core + Python stand.
@@ -16,7 +20,10 @@ are handled correctly, restart preserves state and all replays verify.
 
 ## M1 — Verified rules and native environment interface
 
-- [ ] Choose initial region/patch, actual Apex format, one map and fixed loadouts.
+- [x] Choose Global as the primary region and China as an advance research source.
+- [ ] Freeze the initial Global patch, actual Apex format, one map and fixed loadouts.
+- [ ] Add immutable regional snapshots and content-availability validation;
+  distinguish Global live, China live and explicit Global-preview experiments.
 - [ ] Collect evidence-backed mechanics cases; mark unknowns explicitly.
 - [ ] Model rounds, activations, skill actions, extra movement and reactivation.
 - [ ] Add actual movement profiles, terrain effects and guard timing.
@@ -47,6 +54,8 @@ held-out tests, with reproducible checkpoints. More games alone is not acceptanc
 - [ ] Evaluate final battle outcomes, not standalone hero ratings.
 - [ ] Jointly improve draft and battle against diverse league opponents.
 - [ ] Expand scenarios and loadouts without silently resetting old evaluations.
+- [ ] Compare an owner's Global roster before/after declared China-derived additions;
+  include dependency checks, regional availability and uncertainty estimates.
 
 ## M4 — Usable analysis and human evaluation
 

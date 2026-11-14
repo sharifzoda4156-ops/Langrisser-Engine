@@ -27,7 +27,9 @@ The owner plays Global. China supplies advance research and future Global-previe
 experiments. Read docs/REGIONAL_RULESETS.md. Keep region/patch/content revisions
 explicit; never assume a fixed 180-day delay, automatically import all China
 content into Global, or equate a release announcement with verified mechanics.
-These modes are planned, not implemented in protocol-fixture-v0.
+Regional snapshot creation, validation and explicit preview composition now work
+as data tooling and can bind to synthetic fixture matches. Actual Global/China
+combat and real-hero implementations are still absent. See docs/CONTENT_SNAPSHOTS.md.
 
 ## Workflow
 
@@ -62,6 +64,11 @@ normal builds. Generated binaries, databases, model weights and runs stay out of
   skill descriptions alone do not establish event ordering or numeric rounding.
 - Reject unsupported rulesets, content fields and actions. Never silently ignore
   an unknown talent, item, soldier effect or terrain mechanic.
+- Preserve content_snapshot seals and exact scenario binding. Do not strip a
+  snapshot to make an invalid regional run pass. Preview imports/dependencies
+  must be explicit; never replace shared revisions or resolve a missing latest.
+- Release-metadata catalog entries have no executable payload; announcements do
+  not enable real heroes in fixture matches. Keep fixture_ ids/dates synthetic.
 - Keep synthetic fixture ids prefixed fixture_. Never put a real hero's name on
   a made-up rules implementation. Freeze fixture semantics or bump its ruleset id.
 - Distinguish round, player decision, unit action, extra movement, reactivation,
@@ -82,6 +89,8 @@ normal builds. Generated binaries, databases, model weights and runs stay out of
   request id, acting player, version, state hash and legal action before mutation.
 - Replay verification must recompute outcomes AND compare events and state hashes.
 - Schema/rules/protocol changes need compatibility handling or explicit rejection.
+- Existing unbound fixture scenarios/replays remain supported with unchanged
+  hashes. Optional snapshot bindings participate in hashes and replay validation.
 - A seeded baseline run is not neural learning. LLM reasoning is not a policy
   weight update. Store policy/version, scenario and seed for experiments.
 - Evaluate candidates on held-out scenarios, roles and opponents; self-play rating

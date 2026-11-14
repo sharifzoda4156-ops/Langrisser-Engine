@@ -1,0 +1,267 @@
+{
+  "schema_version": 1,
+  "catalog_id": "synthetic-regional-tests-v1",
+  "entries": [
+    {
+      "id": "fixture_striker",
+      "revision": "v1",
+      "kind": "hero",
+      "fidelity": "synthetic_fixture",
+      "mechanics": [
+        "fixture.unit.v0"
+      ],
+      "dependencies": [],
+      "releases": {
+        "global": {
+          "since": "2000-01-01",
+          "until": null,
+          "published_on": "2000-01-01",
+          "source": "fixture:synthetic-content-tests"
+        },
+        "cn": {
+          "since": "2000-01-01",
+          "until": null,
+          "published_on": "2000-01-01",
+          "source": "fixture:synthetic-content-tests"
+        }
+      },
+      "payload": {
+        "id": "fixture_striker",
+        "hp": 14,
+        "attack": 8,
+        "defense": 2,
+        "movement": 2,
+        "range": 1
+      }
+    },
+    {
+      "id": "fixture_sentinel",
+      "revision": "v1",
+      "kind": "hero",
+      "fidelity": "synthetic_fixture",
+      "mechanics": [
+        "fixture.unit.v0"
+      ],
+      "dependencies": [],
+      "releases": {
+        "global": {
+          "since": "2000-01-01",
+          "until": null,
+          "published_on": "2000-01-01",
+          "source": "fixture:synthetic-content-tests"
+        },
+        "cn": {
+          "since": "2000-01-01",
+          "until": null,
+          "published_on": "2000-01-01",
+          "source": "fixture:synthetic-content-tests"
+        }
+      },
+      "payload": {
+        "id": "fixture_sentinel",
+        "hp": 20,
+        "attack": 6,
+        "defense": 4,
+        "movement": 1,
+        "range": 1
+      }
+    },
+    {
+      "id": "fixture_archer",
+      "revision": "v1",
+      "kind": "hero",
+      "fidelity": "synthetic_fixture",
+      "mechanics": [
+        "fixture.unit.v0"
+      ],
+      "dependencies": [],
+      "releases": {
+        "global": {
+          "since": "2000-01-01",
+          "until": null,
+          "published_on": "2000-01-01",
+          "source": "fixture:synthetic-content-tests"
+        },
+        "cn": {
+          "since": "2000-01-01",
+          "until": null,
+          "published_on": "2000-01-01",
+          "source": "fixture:synthetic-content-tests"
+        }
+      },
+      "payload": {
+        "id": "fixture_archer",
+        "hp": 10,
+        "attack": 7,
+        "defense": 1,
+        "movement": 2,
+        "range": 2
+      }
+    },
+    {
+      "id": "fixture_scout",
+      "revision": "v1",
+      "kind": "hero",
+      "fidelity": "synthetic_fixture",
+      "mechanics": [
+        "fixture.unit.v0"
+      ],
+      "dependencies": [],
+      "releases": {
+        "global": {
+          "since": "2000-01-01",
+          "until": null,
+          "published_on": "2000-01-01",
+          "source": "fixture:synthetic-content-tests"
+        },
+        "cn": {
+          "since": "2000-01-01",
+          "until": null,
+          "published_on": "2000-01-01",
+          "source": "fixture:synthetic-content-tests"
+        }
+      },
+      "payload": {
+        "id": "fixture_scout",
+        "hp": 12,
+        "attack": 6,
+        "defense": 1,
+        "movement": 3,
+        "range": 1
+      }
+    },
+    {
+      "id": "fixture_arena",
+      "revision": "v1",
+      "kind": "map",
+      "fidelity": "synthetic_fixture",
+      "mechanics": [
+        "fixture.map.v0"
+      ],
+      "dependencies": [],
+      "releases": {
+        "global": {
+          "since": "2000-01-01",
+          "until": null,
+          "published_on": "2000-01-01",
+          "source": "fixture:synthetic-content-tests"
+        },
+        "cn": {
+          "since": "2000-01-01",
+          "until": null,
+          "published_on": "2000-01-01",
+          "source": "fixture:synthetic-content-tests"
+        }
+      },
+      "payload": {
+        "width": 5,
+        "height": 3,
+        "costs": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          2,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "fixture_draft",
+      "revision": "v1",
+      "kind": "draft",
+      "fidelity": "synthetic_fixture",
+      "mechanics": [
+        "fixture.draft.v0"
+      ],
+      "dependencies": [],
+      "releases": {
+        "global": {
+          "since": "2000-01-01",
+          "until": null,
+          "published_on": "2000-01-01",
+          "source": "fixture:synthetic-content-tests"
+        },
+        "cn": {
+          "since": "2000-01-01",
+          "until": null,
+          "published_on": "2000-01-01",
+          "source": "fixture:synthetic-content-tests"
+        }
+      },
+      "payload": {
+        "enabled": true,
+        "team_size": 2,
+        "bans_per_side": 1
+      }
+    },
+    {
+      "id": "fixture_vanguard",
+      "revision": "v1",
+      "kind": "hero",
+      "fidelity": "synthetic_fixture",
+      "mechanics": [
+        "fixture.unit.v0"
+      ],
+      "dependencies": [],
+      "releases": {
+        "global": null,
+        "cn": {
+          "since": "2000-01-02",
+          "until": null,
+          "published_on": "2000-01-02",
+          "source": "fixture:synthetic-content-tests"
+        }
+      },
+      "payload": {
+        "id": "fixture_vanguard",
+        "hp": 16,
+        "attack": 9,
+        "defense": 2,
+        "movement": 3,
+        "range": 1
+      }
+    },
+    {
+      "id": "fixture_striker",
+      "revision": "v2",
+      "kind": "hero",
+      "fidelity": "synthetic_fixture",
+      "mechanics": [
+        "fixture.unit.v0"
+      ],
+      "dependencies": [],
+      "releases": {
+        "global": {
+          "since": "2000-02-01",
+          "until": null,
+          "published_on": "2000-02-01",
+          "source": "fixture:synthetic-content-tests"
+        },
+        "cn": {
+          "since": "2000-01-02",
+          "until": null,
+          "published_on": "2000-01-02",
+          "source": "fixture:synthetic-content-tests"
+        }
+      },
+      "payload": {
+        "id": "fixture_striker",
+        "hp": 14,
+        "attack": 9,
+        "defense": 2,
+        "movement": 2,
+        "range": 1
+      }
+    }
+  ]
+}

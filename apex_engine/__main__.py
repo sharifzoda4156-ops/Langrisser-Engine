@@ -20,6 +20,7 @@ def main():
     commands = parser.add_subparsers(dest="command", required=True)
     create = commands.add_parser("create", help="create a synthetic fixture match")
     create.add_argument("--scenario", default=str(ROOT / "scenarios" / "protocol_fixture.json"))
+    create.add_argument("--snapshot", help="sealed content snapshot; exact scenario binding is checked")
     request = commands.add_parser("request", help="fetch a player's pending decision")
     request.add_argument("match_id")
     request.add_argument("--player", type=int, choices=(0, 1), required=True)
@@ -32,6 +33,7 @@ def main():
     verify.add_argument("path")
     selfplay = commands.add_parser("selfplay", help="collect baseline games; no neural training")
     selfplay.add_argument("--scenario", default=str(ROOT / "scenarios" / "protocol_fixture.json"))
+    selfplay.add_argument("--snapshot", help="sealed content snapshot")
     selfplay.add_argument("--episodes", type=int, default=2)
     selfplay.add_argument("--seed", type=int, default=1)
     selfplay.add_argument("--players", nargs=2, choices=("random", "heuristic"),
@@ -39,9 +41,41 @@ def main():
     selfplay.add_argument("--output", required=True, help="a new directory")
     serve = commands.add_parser("serve", help="start loopback-only JSON HTTP stand")
     serve.add_argument("--port", type=int, default=8765)
+    content = commands.add_parser("content", help="build, compose and verify regional content snapshots")
+    content_commands = content.add_subparsers(dest="content_command", required=True)
+    build = content_commands.add_parser("build", help="freeze exact catalog revisions for a regional date")
+    build.add_argument("--catalog", required=True)
+    build.add_argument("--manifest", required=True)
+    build.add_argument("--output", help="new output file; otherwise print the snapshot")
+    preview = content_commands.add_parser("preview", help="explicit changes over a frozen Global baseline")
+    preview.add_argument("--baseline", required=True)
+    preview.add_argument("--source", required=True)
+    preview.add_argument("--changes", required=True, help="JSON list of exact id/revision references")
+    preview.add_argument("--snapshot-id", required=True)
+    preview.add_argument("--output", help="new output file; otherwise print the snapshot")
+    content_verify = content_commands.add_parser("verify", help="validate a sealed snapshot and its lineage")
+    content_verify.add_argument("path")
     args = parser.parse_args()
     try:
-        if args.command == "verify":
+        if args.command == "content":
+            from .content import build_preview, build_snapshot, verify_snapshot
+            if args.content_command == "verify":
+                result = {"verified": True, **verify_snapshot(read_json(args.path))}
+            else:
+                if args.content_command == "build":
+                    snapshot = build_snapshot(read_json(args.catalog), read_json(args.manifest))
+                else:
+                    snapshot = build_preview(read_json(args.baseline), read_json(args.source),
+                                             read_json(args.changes), args.snapshot_id)
+                if args.output:
+                    target = Path(args.output)
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    with target.open("x") as output:
+                        output.write(json.dumps(snapshot, indent=2, sort_keys=True) + "\n")
+                    result = {"output": str(target), **verify_snapshot(snapshot)}
+                else:
+                    result = snapshot
+        elif args.command == "verify":
             result = verify_replay(read_json(args.path))
         elif args.command == "serve":
             from .http_server import make_server
@@ -59,7 +93,11 @@ def main():
         else:
             stand = Stand(args.db)
             if args.command == "create":
-                result = stand.create_match(read_json(args.scenario))
+                config = read_json(args.scenario)
+                if args.snapshot:
+                    from .content import bind_snapshot
+                    config = bind_snapshot(config, read_json(args.snapshot))
+                result = stand.create_match(config)
             elif args.command == "request":
                 result = stand.get_decision_request(args.match_id, args.player)
             elif args.command == "submit":
@@ -67,7 +105,11 @@ def main():
             elif args.command == "replay":
                 result = stand.get_replay(args.match_id)
             else:
-                result = run_selfplay(stand, read_json(args.scenario), args.episodes,
+                config = read_json(args.scenario)
+                if args.snapshot:
+                    from .content import bind_snapshot
+                    config = bind_snapshot(config, read_json(args.snapshot))
+                result = run_selfplay(stand, config, args.episodes,
                                       args.seed, args.players, args.output)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0

@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "snapshot_id": "fixture-cn-20000102",
+  "mode": "cn_live",
+  "patch": "fixture-test-patch",
+  "as_of": "2000-01-02",
+  "ruleset": "protocol-fixture-v0",
+  "entries": [
+    {
+      "id": "fixture_striker",
+      "revision": "v2"
+    },
+    {
+      "id": "fixture_sentinel",
+      "revision": "v1"
+    },
+    {
+      "id": "fixture_archer",
+      "revision": "v1"
+    },
+    {
+      "id": "fixture_scout",
+      "revision": "v1"
+    },
+    {
+      "id": "fixture_arena",
+      "revision": "v1"
+    },
+    {
+      "id": "fixture_draft",
+      "revision": "v1"
+    },
+    {
+      "id": "fixture_vanguard",
+      "revision": "v1"
+    }
+  ]
+}

@@ -3,39 +3,23 @@
 No real hero or Langrisser formula is implemented. Unknown rulesets fail closed.
 """
 import copy
-import hashlib
 import json
 import os
 from pathlib import Path
 import subprocess
 
 from .errors import EngineError
+from .schema import canonical, digest, integer, keys, validate_fixture_hero
 
 RULESET = "protocol-fixture-v0"
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def canonical(value):
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False)
-
-
-def digest(value):
-    return hashlib.sha256(canonical(value).encode()).hexdigest()
-
-
-def integer(value, name, low, high):
-    if type(value) is not int or not low <= value <= high:
-        raise EngineError(f"{name} must be an integer in [{low}, {high}]")
-    return value
-
-
-def keys(value, required, name):
-    if not isinstance(value, dict) or set(value) != set(required):
-        raise EngineError(f"{name} requires exactly these fields: {', '.join(required)}")
-
-
 def validate_config(config):
-    keys(config, ["ruleset", "map", "round_limit", "draft", "boxes"], "scenario")
+    fields = ["ruleset", "map", "round_limit", "draft", "boxes"]
+    if isinstance(config, dict) and "content_snapshot" in config:
+        fields.append("content_snapshot")
+    keys(config, fields, "scenario")
     if config["ruleset"] != RULESET:
         raise EngineError("unsupported ruleset: only protocol-fixture-v0 is implemented")
     board = config["map"]
@@ -67,24 +51,18 @@ def validate_config(config):
             raise EngineError("fixed boxes must contain exactly team_size heroes")
         ids = set()
         for hero in box:
-            keys(hero, ["id", "hp", "attack", "defense", "movement", "range"], "fixture hero")
-            hero_id = hero["id"]
-            if (not isinstance(hero_id, str) or not hero_id.startswith("fixture_")
-                    or len(hero_id) > 80 or not hero_id.isascii()
-                    or not all(c.isalnum() or c == "_" for c in hero_id)):
-                raise EngineError("synthetic hero ids must use fixture_ and ASCII letters/digits/_")
+            hero_id = validate_fixture_hero(hero)
             if hero_id in ids:
                 raise EngineError(f"duplicate hero id in box {side}")
             ids.add(hero_id)
-            for field, low, high in [("hp", 1, 10000), ("attack", 1, 10000),
-                                     ("defense", 0, 10000), ("movement", 0, 10),
-                                     ("range", 1, 10)]:
-                integer(hero[field], field, low, high)
     for side in (0, 1):
         for i in range(team_size):
             x, y = spawn(board, team_size, side, i)
             if board["costs"][y * width + x] == 0:
                 raise EngineError("deployment tiles must be passable")
+    if "content_snapshot" in config:
+        from .content import validate_runtime_binding
+        validate_runtime_binding(config["content_snapshot"], config)
     return copy.deepcopy(config)
 
 
@@ -205,6 +183,10 @@ def apply_action(config, state, action_id):
 def observation(config, state, player):
     """Fixture is perfect-information. Do not reuse this for hidden-info rulesets."""
     integer(player, "player", 0, 1)
-    return {"ruleset": RULESET, "fidelity": "synthetic_fixture", "player": player,
+    result = {"ruleset": RULESET, "fidelity": "synthetic_fixture", "player": player,
             "map": copy.deepcopy(config["map"]), "round_limit": config["round_limit"],
             "boxes": copy.deepcopy(config["boxes"]), "state": copy.deepcopy(state)}
+    if "content_snapshot" in config:
+        from .content import experiment_metadata
+        result["experiment"] = experiment_metadata(config["content_snapshot"])
+    return result

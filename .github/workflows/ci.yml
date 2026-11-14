@@ -27,3 +27,5 @@ jobs:
           python -m apex_engine verify runs/ci-smoke/episode-00000.json
       - name: Exercise server and external players in separate processes
         run: python scripts/smoke_external.py --output runs/ci-external
+      - name: Exercise regional snapshots and explicit preview end to end
+        run: python scripts/smoke_regional.py --output runs/ci-regional

@@ -9,7 +9,8 @@ LLM, must use the same decision contract and receive only permitted observations
 The owner's primary region is Global. China is an advance research and forecasting
 source. Use shared engine code with frozen regional content/mechanic revisions;
 see [regional rulesets](REGIONAL_RULESETS.md). Forecasts must name their Global
-baseline and China-derived changes. This regional design is not implemented yet.
+baseline and China-derived changes. Snapshot/data tooling and fixture binding are
+implemented; real regional game mechanics are not. See [content snapshots](CONTENT_SNAPSHOTS.md).
 
 ## Executable foundation
 

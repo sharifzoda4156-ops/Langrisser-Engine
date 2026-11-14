@@ -6,6 +6,14 @@ Current fidelity: `synthetic_fixture`. There is no hidden information or chance.
 HTTP is a loopback development interface with no authentication, not a public API.
 CLI and HTTP call the same Stand implementation and the same SQLite database.
 
+Scenarios may optionally include a sealed `content_snapshot`; CLI create/selfplay
+also accept `--snapshot FILE`. The stand checks availability, explicit preview
+lineage and exact hero/map/draft payload binding before committing a match. A
+compact `experiment` label is returned at creation and in player observations;
+the full snapshot stays in the replay's config and participates in state hashes.
+Only synthetic snapshots can execute today. Real release metadata cannot run as
+fixture combat. See [content snapshots](CONTENT_SNAPSHOTS.md).
+
 ## Routes
 
 | Method | Path | Input / result |

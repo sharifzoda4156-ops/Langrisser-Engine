@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "snapshot_id": "tekkaman-release-evidence-global",
+  "mode": "global_live",
+  "patch": "release-evidence-2026-08-13",
+  "as_of": "2026-08-13",
+  "ruleset": "langrisser-release-metadata-v1",
+  "entries": [
+    {
+      "id": "hero.d_boy",
+      "revision": "release-evidence-v1"
+    },
+    {
+      "id": "hero.shinya_aiba",
+      "revision": "release-evidence-v1"
+    }
+  ]
+}

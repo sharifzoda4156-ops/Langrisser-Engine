@@ -59,8 +59,12 @@ class Stand:
         with self.connection() as db:
             db.execute("INSERT INTO matches VALUES (?, ?, ?, 0)",
                        (match_id, canonical(config), canonical(state)))
-        return {"match_id": match_id, "version": 0, "ruleset": config["ruleset"],
-                "fidelity": "synthetic_fixture"}
+        result = {"match_id": match_id, "version": 0, "ruleset": config["ruleset"],
+                  "fidelity": "synthetic_fixture"}
+        if "content_snapshot" in config:
+            from .content import experiment_metadata
+            result["experiment"] = experiment_metadata(config["content_snapshot"])
+        return result
 
     @staticmethod
     def request_for(match_id, config, state, version, player):

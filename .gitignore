@@ -1,0 +1,14 @@
+/build/
+/runs/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.env
+.env.*
+!.env.example
+*.sqlite3
+*.sqlite3-shm
+*.sqlite3-wal
+AGENTS.local.md
+CLAUDE.local.md

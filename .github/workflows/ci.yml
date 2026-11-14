@@ -34,3 +34,8 @@ jobs:
           python -m apex_engine selfplay --scenario scenarios/action_lifecycle_lab.json --episodes 2 --seed 1 --output runs/ci-lifecycle
           python -m apex_engine verify runs/ci-lifecycle/episode-00000.json
           python scripts/smoke_external.py --scenario scenarios/action_lifecycle_lab.json --output runs/ci-lifecycle-external
+      - name: Exercise terrain profiles end to end
+        run: |
+          python -m apex_engine selfplay --scenario scenarios/terrain_lab.json --episodes 2 --seed 1 --output runs/ci-terrain
+          python -m apex_engine verify runs/ci-terrain/episode-00000.json
+          python scripts/smoke_external.py --scenario scenarios/terrain_lab.json --output runs/ci-terrain-external

@@ -6,6 +6,11 @@ A headless, evidence-backed Apex environment for battle/draft search, self-play
 learning and independent human evaluation. Every player, including an external
 LLM, must use the same decision contract and receive only permitted observations.
 
+The owner's primary region is Global. China is an advance research and forecasting
+source. Use shared engine code with frozen regional content/mechanic revisions;
+see [regional rulesets](REGIONAL_RULESETS.md). Forecasts must name their Global
+baseline and China-derived changes. This regional design is not implemented yet.
+
 ## Executable foundation
 
 The current stack is a vertical protocol fixture:

@@ -21,6 +21,14 @@ it is gitignored, is not distributed and must never be staged. All local files
 and instructions remain subject to the current user's scope and higher-priority
 instructions. Claude and Copilot entry files point here; keep them consistent.
 
+## Regional target
+
+The owner plays Global. China supplies advance research and future Global-preview
+experiments. Read docs/REGIONAL_RULESETS.md. Keep region/patch/content revisions
+explicit; never assume a fixed 180-day delay, automatically import all China
+content into Global, or equate a release announcement with verified mechanics.
+These modes are planned, not implemented in protocol-fixture-v0.
+
 ## Workflow
 
 - Work on a task branch, open a PR, then merge only when authorized by the user.

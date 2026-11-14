@@ -2,6 +2,8 @@
 
 - Status: hypothesis / observed / reproduced / verified / contradicted
 - Region and patch/date:
+- Target region/patch (if different); evidence or assumptions for transfer:
+- Experiment mode and baseline/candidate content revisions (for previews):
 - Ruleset id:
 - Mechanic/interaction under test:
 - Original source or own experiment:

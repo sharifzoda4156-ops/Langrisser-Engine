@@ -18,8 +18,12 @@ ordering are outside the model. Physical and magic are explicit categories,
 not inferred from classes or skills. The existing lifecycle and terrain rulesets
 retain their frozen behavior and refuse guard fields.
 
+A full tank can declare both types. A physical or magic specialist declares
+only one. The example scenario now uses a dual-type protector; unit tests cover
+all three configurations.
+
 Official historical descriptions establish that guard may protect against
-[physical attacks at two tiles](https://us-news.zlongame.com/heroSSR/861.jhtml),
+[both attack types or physical attacks at two tiles](https://us-news.zlongame.com/heroSSR/861.jhtml),
 [magic attacks at two tiles](https://us-news.zlongame.com/heroSSR/1687.jhtml),
 and that [Shadow Raid ignores Guard](https://us-news.zlongame.com/mzgl/1627.jhtml).
 A generic 2019 guide describes only physical guarding, but skill-specific

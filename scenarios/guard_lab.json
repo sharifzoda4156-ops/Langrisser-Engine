@@ -140,7 +140,8 @@
       "guard": {
         "range": 2,
         "types": [
-          "physical"
+          "physical",
+          "magic"
         ]
       },
       "attack_kind": "physical",

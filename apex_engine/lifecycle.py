@@ -12,6 +12,7 @@ from .schema import digest, integer, keys
 RULESET = "action-lifecycle-lab-v1"
 TERRAIN_RULESET = "terrain-lab-v1"
 GUARD_RULESET = "guard-lab-v1"
+COMBAT_RULESET = "combat-pools-lab-v1"
 CLOCKS = ("owner_action_end", "round_end")
 SKILL_KINDS = ("self_refresh", "ally_refresh", "timed_effect")
 
@@ -32,7 +33,7 @@ def effect_definition(effect):
 
 def validate_config(config):
     keys(config, ["ruleset", "map", "round_limit", "first_player", "units"], "lifecycle scenario")
-    if config["ruleset"] not in (RULESET, TERRAIN_RULESET, GUARD_RULESET):
+    if config["ruleset"] not in (RULESET, TERRAIN_RULESET, GUARD_RULESET, COMBAT_RULESET):
         raise EngineError("unsupported lifecycle ruleset")
     board = config["map"]
     keys(board, ["width", "height", "costs"] + (["terrain", "profiles"] if config["ruleset"] == TERRAIN_RULESET else []), "map")
@@ -66,8 +67,14 @@ def validate_config(config):
         keys(unit, ["id", "name", "owner", "x", "y", "hp", "attack", "defense",
                     "hero_movement", "soldier_movement", "range", "post_attack_move",
                     "skills", "effects"] + (["movement_profile"] if config["ruleset"] == TERRAIN_RULESET else [])
-                    + (["guard", "attack_kind", "ignore_guard"] if config["ruleset"] == GUARD_RULESET else []), "lab unit")
-        if config["ruleset"] == GUARD_RULESET:
+                    + (["guard", "attack_kind", "ignore_guard"] if config["ruleset"] in (GUARD_RULESET, COMBAT_RULESET) else [])
+                    + (["hero_hp", "soldier_hp"] if config["ruleset"] == COMBAT_RULESET else []), "lab unit")
+        if config["ruleset"] == COMBAT_RULESET:
+            integer(unit["hero_hp"], "hero HP", 1, 10000)
+            integer(unit["soldier_hp"], "soldier HP", 0, 9999)
+            if unit["hp"] != unit["hero_hp"] + unit["soldier_hp"]:
+                raise EngineError("total HP must equal hero + soldier HP")
+        if config["ruleset"] in (GUARD_RULESET, COMBAT_RULESET):
             guard = unit["guard"]
             if guard is not None:
                 keys(guard, ["range", "types"], "lab guard")
@@ -150,6 +157,9 @@ def initial_state(config):
                     acted=0, completed_actions=0, effects=[],
                     cooldowns={s["id"]: {"remaining": 0, "next_tick": 1} for s in spec["skills"]},
                     uses={s["id"]: 0 for s in spec["skills"]})
+        if config["ruleset"] == COMBAT_RULESET:
+            unit["hero_remaining"] = spec["hero_hp"]
+            unit["soldier_remaining"] = spec["soldier_hp"]
         for effect in spec["effects"]:
             install_effect(unit, effect, 1)
         units.append(unit)
@@ -309,7 +319,7 @@ def apply_action(config, state, action_id):
     if not pending or pending["kind"] != "post_move":
         lifecycle["action_serial"] += 1
         events.append({"type": "action_start", "unit": actor["id"], "action": lifecycle["action_serial"]})
-    guarded_attack = config["ruleset"] == GUARD_RULESET and action["kind"] == "attack"
+    guarded_attack = config["ruleset"] in (GUARD_RULESET, COMBAT_RULESET) and action["kind"] == "attack"
     movement = {**action, "target": action["target"] if action["kind"] == "attack" and not guarded_attack else -1}
     effective_config = terrain_config(config, actor) if config["ruleset"] == TERRAIN_RULESET else config
     resolved = native(effective_config, native_view(state), "resolve", movement)
@@ -324,6 +334,13 @@ def apply_action(config, state, action_id):
             events.append({"type": "guard_intercept", "guard": target["id"], "protected": action["target"],
                            "attacker": actor["id"], "attack_kind": actor["attack_kind"]})
         damage = min(target["hp"], max(1, actor["attack"] - target["defense"]))
+        if config["ruleset"] == COMBAT_RULESET:
+            soldier_damage = min(damage, target["soldier_remaining"])
+            hero_damage = damage - soldier_damage
+            target["soldier_remaining"] -= soldier_damage
+            target["hero_remaining"] -= hero_damage
+            events.append({"type": "fixture_damage_pools", "target": target["id"],
+                           "soldier": soldier_damage, "hero": hero_damage})
         target["hp"] -= damage
         events.append({"type": "fixture_damage", "source": actor["id"], "target": target["id"], "amount": damage})
     lifecycle["pending"] = None

@@ -32,6 +32,7 @@ are handled correctly, restart preserves state and all replays verify.
 - [ ] Confirm the laboratory policies in current Global Battle Test and map actual
   hero/skill handlers; do not treat documented contracts as gameplay verification.
 - [x] Add a versioned synthetic terrain-profile laboratory with per-unit costs.
+- [x] Add an explicit synthetic physical/magic Guard interception laboratory.
 - [ ] Validate actual movement profiles, terrain effects and guard timing in Global.
 - [ ] Separate hero/soldier HP, hit timing, crits, stat conversions and rounding.
 - [ ] Explicit chance/observation interfaces; no RNG or privileged-state leakage.

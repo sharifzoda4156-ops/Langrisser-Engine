@@ -1,0 +1,29 @@
+{
+  "schema": "aoe-terrain-probe-v1",
+  "cases": [
+    {
+      "id": "probe_aoe_terrain_unmeasured",
+      "region": "China",
+      "patch": "replace-with-tested-patch",
+      "source": "unmeasured",
+      "input": {
+        "attack": "1000",
+        "hero_defense": "400",
+        "soldier_defense": "400",
+        "skill_multiplier": "0.3",
+        "terrain_percent": "20",
+        "max_error": "10"
+      },
+      "controls": {
+        "same_units": false,
+        "same_loadout": false,
+        "ten_soldiers": false,
+        "no_tile_triggered_extras": false,
+        "no_other_modifiers": false,
+        "uncapped_hp": false,
+        "no_random_effects": false
+      },
+      "observed": null
+    }
+  ]
+}

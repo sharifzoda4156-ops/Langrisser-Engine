@@ -38,7 +38,11 @@ are handled correctly, restart preserves state and all replays verify.
 - [x] Record exact Chinese calculator probes for stat and damage groups.
 - [x] Audit an independent formula report and add an isolated explicit-hit
   accounting probe; no current-Global battle timing is certified.
+- [x] Add a paired AoE terrain research probe that compares both Chinese
+  candidate formulas; its example has no measured game result.
 - [ ] Validate actual soldier/hero hit timing, crits, stat conversions and rounding.
+- [ ] Record a controlled AoE plain/forest pair with hero and soldier HP losses
+  in the China client; test tile-dependent effects separately.
 - [ ] Explicit chance/observation interfaces; no RNG or privileged-state leakage.
 - [ ] Add a small validated roster covering the required interactions.
 - [ ] Benchmark and add an efficient in-process training interface.

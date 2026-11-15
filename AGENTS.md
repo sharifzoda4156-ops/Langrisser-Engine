@@ -8,12 +8,13 @@ Human-level or superhuman strength must be established by independent evaluation
 Read README.md, docs/ARCHITECTURE.md and docs/ROADMAP.md before substantial work.
 
 Executable rulesets: **protocol-fixture-v0** (synthetic_fixture) and
-**action-lifecycle-lab-v1** and **terrain-lab-v1** (mechanics_lab). The latter separates actions,
+**action-lifecycle-lab-v1**, **terrain-lab-v1** and **guard-lab-v1**
+(mechanics_lab). The latter separates actions,
 continuations and duration clocks; its scheduling/cooldown details are declared
 lab policies, not current-Global certification. Read docs/ACTION_LIFECYCLE.md and
 data/mechanics/action_lifecycle_evidence.json. Terrain profiles use explicit synthetic costs; do not infer hero/soldier movement
-composition. Read docs/TERRAIN_LAB.md. Real heroes, soldiers' combat,
-Guard, Apex damage, neural training and search are NOT implemented. Do not call
+composition. Read docs/TERRAIN_LAB.md and docs/GUARD_LAB.md. Real heroes, soldiers' combat,
+full Guard behavior, Apex damage, neural training and search are NOT implemented. Do not call
 baseline trajectory collection learning or label lab policies game-verified.
 
 ## Public and local instructions

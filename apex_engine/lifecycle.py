@@ -11,6 +11,7 @@ from .schema import digest, integer, keys
 
 RULESET = "action-lifecycle-lab-v1"
 TERRAIN_RULESET = "terrain-lab-v1"
+GUARD_RULESET = "guard-lab-v1"
 CLOCKS = ("owner_action_end", "round_end")
 SKILL_KINDS = ("self_refresh", "ally_refresh", "timed_effect")
 
@@ -31,7 +32,7 @@ def effect_definition(effect):
 
 def validate_config(config):
     keys(config, ["ruleset", "map", "round_limit", "first_player", "units"], "lifecycle scenario")
-    if config["ruleset"] not in (RULESET, TERRAIN_RULESET):
+    if config["ruleset"] not in (RULESET, TERRAIN_RULESET, GUARD_RULESET):
         raise EngineError("unsupported lifecycle ruleset")
     board = config["map"]
     keys(board, ["width", "height", "costs"] + (["terrain", "profiles"] if config["ruleset"] == TERRAIN_RULESET else []), "map")
@@ -64,7 +65,19 @@ def validate_config(config):
     for unit in units:
         keys(unit, ["id", "name", "owner", "x", "y", "hp", "attack", "defense",
                     "hero_movement", "soldier_movement", "range", "post_attack_move",
-                    "skills", "effects"] + (["movement_profile"] if config["ruleset"] == TERRAIN_RULESET else []), "lab unit")
+                    "skills", "effects"] + (["movement_profile"] if config["ruleset"] == TERRAIN_RULESET else [])
+                    + (["guard", "attack_kind", "ignore_guard"] if config["ruleset"] == GUARD_RULESET else []), "lab unit")
+        if config["ruleset"] == GUARD_RULESET:
+            guard = unit["guard"]
+            if guard is not None:
+                keys(guard, ["range", "types"], "lab guard")
+                integer(guard["range"], "guard range", 1, 3)
+                if (not isinstance(guard["types"], list) or not guard["types"]
+                        or any(t not in ("physical", "magic") for t in guard["types"])
+                        or len(guard["types"]) != len(set(guard["types"]))):
+                    raise EngineError("invalid guard attack types")
+            if unit["attack_kind"] not in ("physical", "magic") or type(unit["ignore_guard"]) is not bool:
+                raise EngineError("invalid guard attack properties")
         if config["ruleset"] == TERRAIN_RULESET and (not isinstance(unit["movement_profile"], str) or unit["movement_profile"] not in board["profiles"]):
             raise EngineError("unknown movement profile")
         fixture_id(unit["name"])
@@ -162,6 +175,18 @@ def terrain_config(config, unit):
     profile = board["profiles"][unit["movement_profile"]]
     board["costs"] = [profile[t] if cost else 0 for t, cost in zip(board["terrain"], board["costs"])]
     return result
+
+
+def guard_target(state, action, actor):
+    """Declared lab policy: closest eligible protector, then lowest unit id."""
+    original = next(u for u in state["battle"]["units"] if u["id"] == action["target"])
+    if actor["ignore_guard"]:
+        return original
+    eligible = [u for u in state["battle"]["units"] if u["id"] != original["id"]
+                and u["owner"] == original["owner"] and u["hp"] > 0 and u["guard"] is not None
+                and actor["attack_kind"] in u["guard"]["types"]
+                and abs(u["x"] - original["x"]) + abs(u["y"] - original["y"]) <= u["guard"]["range"]]
+    return min(eligible, key=lambda u: (abs(u["x"] - original["x"]) + abs(u["y"] - original["y"]), u["id"])) if eligible else original
 
 
 def legal_actions(config, state):
@@ -284,7 +309,8 @@ def apply_action(config, state, action_id):
     if not pending or pending["kind"] != "post_move":
         lifecycle["action_serial"] += 1
         events.append({"type": "action_start", "unit": actor["id"], "action": lifecycle["action_serial"]})
-    movement = {**action, "target": action["target"] if action["kind"] == "attack" else -1}
+    guarded_attack = config["ruleset"] == GUARD_RULESET and action["kind"] == "attack"
+    movement = {**action, "target": action["target"] if action["kind"] == "attack" and not guarded_attack else -1}
     effective_config = terrain_config(config, actor) if config["ruleset"] == TERRAIN_RULESET else config
     resolved = native(effective_config, native_view(state), "resolve", movement)
     for native_unit in resolved["state"]["units"]:
@@ -292,6 +318,14 @@ def apply_action(config, state, action_id):
         for key in ("x", "y", "hp"):
             unit[key] = native_unit[key]
     events.extend(resolved["events"])
+    if guarded_attack:
+        target = guard_target(updated, action, actor)
+        if target["id"] != action["target"]:
+            events.append({"type": "guard_intercept", "guard": target["id"], "protected": action["target"],
+                           "attacker": actor["id"], "attack_kind": actor["attack_kind"]})
+        damage = min(target["hp"], max(1, actor["attack"] - target["defense"]))
+        target["hp"] -= damage
+        events.append({"type": "fixture_damage", "source": actor["id"], "target": target["id"], "amount": damage})
     lifecycle["pending"] = None
     if pending and pending["kind"] == "post_move":
         events.append({"type": "post_move_end", "unit": actor["id"]})

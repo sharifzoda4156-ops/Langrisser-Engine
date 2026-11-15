@@ -14,7 +14,8 @@ Executable rulesets: **protocol-fixture-v0** (synthetic_fixture) and
 continuations and duration clocks; its scheduling/cooldown details are declared
 lab policies, not current-Global certification. Read docs/ACTION_LIFECYCLE.md and
 data/mechanics/action_lifecycle_evidence.json. Terrain profiles use explicit synthetic costs; do not infer hero/soldier movement
-composition. Read docs/TERRAIN_LAB.md, docs/GUARD_LAB.md and
+composition. Read docs/FORMULA_RESEARCH.md for calculator probes; they must not be
+substituted for verified battle transitions. Read docs/TERRAIN_LAB.md, docs/GUARD_LAB.md and
 docs/COMBAT_POOLS_LAB.md. The health pools and soldier-first single synthetic
 strike are lab accounting policies, not actual Global hit timing. Real heroes, soldiers' combat,
 full Guard behavior, Apex damage, neural training and search are NOT implemented. Do not call

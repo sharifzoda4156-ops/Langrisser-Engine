@@ -1,0 +1,108 @@
+{
+  "schema": "formula-research-v1",
+  "cases": [
+    {
+      "id": "probe_white_equipment_enchant",
+      "source": "https://wiki.biligame.com/langrisser/梦战基础数据分析",
+      "kind": "stat",
+      "input": {
+        "white": 1000,
+        "equipment_flat": 100,
+        "enchant_flat": 20,
+        "enchant_percent": 5,
+        "set_percent": 5,
+        "battle_percent": 25
+      },
+      "expected": {
+        "panel": "1220",
+        "battle": "1525"
+      }
+    },
+    {
+      "id": "probe_base",
+      "source": "https://moyuanmzjsq.streamlit.app/",
+      "kind": "damage",
+      "input": {
+        "attacker": 1000,
+        "defender": 400,
+        "modifiers": {
+          "attack_class_percent": 0,
+          "defense_class_percent": 0,
+          "terrain_percent": 0,
+          "ignore_defense_percent": 0,
+          "skill_multiplier": "1",
+          "strike_coefficient": "0.5",
+          "strikes": 20,
+          "general_damage_percent": 0,
+          "skill_damage_percent": 0,
+          "ranged_damage_percent": 0,
+          "other_damage_percent": 0,
+          "critical_bonus_percent": 0,
+          "critical_reduction_percent": 0
+        }
+      },
+      "expected": {
+        "per_strike": "300",
+        "total": "6000",
+        "critical_total": "7800"
+      }
+    },
+    {
+      "id": "probe_damage_buckets",
+      "source": "https://moyuanmzjsq.streamlit.app/",
+      "kind": "damage",
+      "input": {
+        "attacker": 1000,
+        "defender": 400,
+        "modifiers": {
+          "attack_class_percent": 0,
+          "defense_class_percent": 0,
+          "terrain_percent": 0,
+          "ignore_defense_percent": 0,
+          "skill_multiplier": "1",
+          "strike_coefficient": "0.5",
+          "strikes": 20,
+          "general_damage_percent": 20,
+          "skill_damage_percent": 10,
+          "ranged_damage_percent": 0,
+          "other_damage_percent": 0,
+          "critical_bonus_percent": 0,
+          "critical_reduction_percent": 0
+        }
+      },
+      "expected": {
+        "per_strike": "396",
+        "total": "7920"
+      }
+    },
+    {
+      "id": "probe_defense_ignore",
+      "source": "https://moyuanmzjsq.streamlit.app/",
+      "kind": "damage",
+      "input": {
+        "attacker": 1000,
+        "defender": 400,
+        "modifiers": {
+          "attack_class_percent": 0,
+          "defense_class_percent": 20,
+          "terrain_percent": 0,
+          "ignore_defense_percent": 20,
+          "skill_multiplier": "1",
+          "strike_coefficient": "0.5",
+          "strikes": 20,
+          "general_damage_percent": 20,
+          "skill_damage_percent": 10,
+          "ranged_damage_percent": 0,
+          "other_damage_percent": 0,
+          "critical_bonus_percent": 0,
+          "critical_reduction_percent": 0
+        }
+      },
+      "expected": {
+        "adjusted_defense": "384",
+        "per_strike": "406.56",
+        "total": "8131.2"
+      }
+    }
+  ]
+}

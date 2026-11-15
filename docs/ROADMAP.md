@@ -36,6 +36,8 @@ are handled correctly, restart preserves state and all replays verify.
 - [ ] Validate actual movement profiles, terrain effects and guard timing in Global.
 - [x] Add a synthetic guard plus hero/soldier HP accounting laboratory.
 - [x] Record exact Chinese calculator probes for stat and damage groups.
+- [x] Audit an independent formula report and add an isolated explicit-hit
+  accounting probe; no current-Global battle timing is certified.
 - [ ] Validate actual soldier/hero hit timing, crits, stat conversions and rounding.
 - [ ] Explicit chance/observation interfaces; no RNG or privileged-state leakage.
 - [ ] Add a small validated roster covering the required interactions.

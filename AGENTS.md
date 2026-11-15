@@ -20,6 +20,9 @@ docs/COMBAT_POOLS_LAB.md. The health pools and soldier-first single synthetic
 strike are lab accounting policies, not actual Global hit timing. Real heroes, soldiers' combat,
 full Guard behavior, Apex damage, neural training and search are NOT implemented. Do not call
 baseline trajectory collection learning or label lab policies game-verified.
+An independent formula report is archived in docs/FORMULA_INDEPENDENT_REVIEW.md;
+read docs/FORMULA_AUDIT_2026-11-15.md before using its claims. The separate
+hit_sequence_lab is an explicit-order research probe, not an executable ruleset.
 
 ## Public and local instructions
 

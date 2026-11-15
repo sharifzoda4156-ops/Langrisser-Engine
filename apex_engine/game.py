@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def validate_config(config):
-    if isinstance(config, dict) and config.get("ruleset") in ("action-lifecycle-lab-v1", "terrain-lab-v1", "guard-lab-v1"):
+    if isinstance(config, dict) and config.get("ruleset") in ("action-lifecycle-lab-v1", "terrain-lab-v1", "guard-lab-v1", "combat-pools-lab-v1"):
         from .lifecycle import validate_config as validate_lifecycle
         return validate_lifecycle(config)
     fields = ["ruleset", "map", "round_limit", "draft", "boxes"]
@@ -84,7 +84,7 @@ def schedule(config):
 
 def initial_state(config):
     config = validate_config(config)
-    if config["ruleset"] in ("action-lifecycle-lab-v1", "terrain-lab-v1", "guard-lab-v1"):
+    if config["ruleset"] in ("action-lifecycle-lab-v1", "terrain-lab-v1", "guard-lab-v1", "combat-pools-lab-v1"):
         from .lifecycle import initial_state as initial_lifecycle
         return initial_lifecycle(config)
     state = {"phase": "draft", "draft_index": 0, "picked": [[], []],
@@ -149,7 +149,7 @@ def native(config, state, command, action=None):
 
 
 def legal_actions(config, state):
-    if config["ruleset"] in ("action-lifecycle-lab-v1", "terrain-lab-v1", "guard-lab-v1"):
+    if config["ruleset"] in ("action-lifecycle-lab-v1", "terrain-lab-v1", "guard-lab-v1", "combat-pools-lab-v1"):
         from .lifecycle import legal_actions as lifecycle_actions
         return lifecycle_actions(config, state)
     if state["phase"] == "finished":
@@ -166,7 +166,7 @@ def legal_actions(config, state):
 
 
 def apply_action(config, state, action_id):
-    if config["ruleset"] in ("action-lifecycle-lab-v1", "terrain-lab-v1", "guard-lab-v1"):
+    if config["ruleset"] in ("action-lifecycle-lab-v1", "terrain-lab-v1", "guard-lab-v1", "combat-pools-lab-v1"):
         from .lifecycle import apply_action as lifecycle_apply
         return lifecycle_apply(config, state, action_id)
     action = next((a for a in legal_actions(config, state) if a["action_id"] == action_id), None)
@@ -195,7 +195,7 @@ def apply_action(config, state, action_id):
 def observation(config, state, player):
     """Fixture is perfect-information. Do not reuse this for hidden-info rulesets."""
     integer(player, "player", 0, 1)
-    if config["ruleset"] in ("action-lifecycle-lab-v1", "terrain-lab-v1", "guard-lab-v1"):
+    if config["ruleset"] in ("action-lifecycle-lab-v1", "terrain-lab-v1", "guard-lab-v1", "combat-pools-lab-v1"):
         return {"ruleset": config["ruleset"], "fidelity": fidelity(config), "player": player,
                 "map": copy.deepcopy(config["map"]), "round_limit": config["round_limit"],
                 "state": copy.deepcopy(state)}
@@ -209,15 +209,15 @@ def observation(config, state, player):
 
 
 def fidelity(config):
-    return "mechanics_lab" if config["ruleset"] in ("action-lifecycle-lab-v1", "terrain-lab-v1", "guard-lab-v1") else "synthetic_fixture"
+    return "mechanics_lab" if config["ruleset"] in ("action-lifecycle-lab-v1", "terrain-lab-v1", "guard-lab-v1", "combat-pools-lab-v1") else "synthetic_fixture"
 
 
 def supported_rulesets():
-    return {RULESET: "synthetic_fixture", "action-lifecycle-lab-v1": "mechanics_lab", "terrain-lab-v1": "mechanics_lab", "guard-lab-v1": "mechanics_lab"}
+    return {RULESET: "synthetic_fixture", "action-lifecycle-lab-v1": "mechanics_lab", "terrain-lab-v1": "mechanics_lab", "guard-lab-v1": "mechanics_lab", "combat-pools-lab-v1": "mechanics_lab"}
 
 
 def decision_bound(config):
-    if config["ruleset"] in ("action-lifecycle-lab-v1", "terrain-lab-v1", "guard-lab-v1"):
+    if config["ruleset"] in ("action-lifecycle-lab-v1", "terrain-lab-v1", "guard-lab-v1", "combat-pools-lab-v1"):
         from .lifecycle import decision_bound as lifecycle_bound
         return lifecycle_bound(config)
     return config["round_limit"] * config["draft"]["team_size"] * 2 + len(schedule(config))

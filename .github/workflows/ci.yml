@@ -44,3 +44,8 @@ jobs:
           python -m apex_engine selfplay --scenario scenarios/guard_lab.json --episodes 2 --seed 1 --output runs/ci-guard
           python -m apex_engine verify runs/ci-guard/episode-00000.json
           python scripts/smoke_external.py --scenario scenarios/guard_lab.json --output runs/ci-guard-external
+      - name: Exercise separate hero and soldier HP through stand
+        run: |
+          python -m apex_engine selfplay --scenario scenarios/combat_pools_lab.json --episodes 2 --seed 1 --output runs/ci-combat-pools
+          python -m apex_engine verify runs/ci-combat-pools/episode-00000.json
+          python scripts/smoke_external.py --scenario scenarios/combat_pools_lab.json --output runs/ci-combat-pools-external
